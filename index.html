@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校招求职 · 新媒体选题生成库</title>
+<style>
+/* ========== 全局样式 ========== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif; background: #f5f6fa; color: #2d3436; min-height: 100vh; }
+/* ========== 顶部导航 ========== */
+.header { background: #fff; border-bottom: 1px solid #e8e8e8; padding: 16px 24px 0; position: sticky; top: 0; z-index: 100; }
+.header h1 { font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #1a1a2e; }
+.tabs { display: flex; gap: 0; }
+.tab { padding: 10px 24px; cursor: pointer; font-size: 14px; color: #636e72; border-bottom: 2px solid transparent; transition: all .2s; user-select: none; }
+.tab:hover { color: #6c5ce7; }
+.tab.active { color: #6c5ce7; border-bottom-color: #6c5ce7; font-weight: 600; }
+/* ========== 主内容区 ========== */
+.main { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+.page { display: none; }
+.page.active { display: block; }
+/* ========== 操作区 ========== */
+.op-card { background: #fff; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.op-card h3 { font-size: 15px; margin-bottom: 12px; color: #2d3436; }
+.op-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+input[type="text"], textarea, select { border: 1px solid #ddd; border-radius: 8px; padding: 8px 12px; font-size: 14px; outline: none; transition: border-color .2s; }
+input[type="text"]:focus, textarea:focus, select:focus { border-color: #6c5ce7; }
+input[type="text"] { flex: 1; min-width: 200px; }
+textarea { width: 100%; min-height: 120px; resize: vertical; font-family: inherit; }
+select { min-width: 180px; }
+.btn { padding: 8px 20px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all .2s; font-weight: 500; }
+.btn-primary { background: #6c5ce7; color: #fff; }
+.btn-primary:hover { background: #5b4cdb; }
+.btn-success { background: #00b894; color: #fff; }
+.btn-success:hover { background: #00a381; }
+.btn-warn { background: #fdcb6e; color: #2d3436; }
+.btn-warn:hover { background: #f9bf3b; }
+.btn-sm { padding: 5px 14px; font-size: 13px; }
+.btn-outline { background: transparent; border: 1px solid #6c5ce7; color: #6c5ce7; }
+.btn-outline:hover { background: #6c5ce7; color: #fff; }
+.btn-danger { background: #e17055; color: #fff; }
+.btn-danger:hover { background: #d35400; }
+/* ========== 结果区 ========== */
+.result-area { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.06); min-height: 200px; }
+.result-area h3 { font-size: 15px; margin-bottom: 12px; color: #636e72; }
+.topic-card { background: #f8f9ff; border: 1px solid #e8e8f8; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.topic-card .title { font-size: 15px; font-weight: 600; color: #1a1a2e; margin-bottom: 8px; line-height: 1.5; }
+.topic-card .meta { font-size: 13px; color: #636e72; line-height: 1.8; }
+.topic-card .meta span { display: inline-block; margin-right: 12px; }
+.tag { display: inline-block; background: #dfe6e9; color: #2d3436; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin: 2px 4px 2px 0; }
+.tag.hot { background: #ff7675; color: #fff; }
+.tag.blue { background: #74b9ff; color: #fff; }
+.tag.green { background: #55efc4; color: #2d3436; }
+/* ========== 热点列表 ========== */
+.hotspot-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+.hotspot-item:last-child { border-bottom: none; }
+.hotspot-info { flex: 1; }
+.hotspot-info .ht-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+.hotspot-info .ht-meta { font-size: 12px; color: #b2bec3; }
+.heat-badge { background: linear-gradient(135deg, #e17055, #d63031); color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-right: 8px; white-space: nowrap; }
+/* ========== 拆解展示 ========== */
+.analysis-block { margin-bottom: 16px; }
+.analysis-block h4 { font-size: 14px; color: #6c5ce7; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #6c5ce7; }
+.analysis-block p, .analysis-block ul { font-size: 13px; line-height: 1.8; color: #2d3436; padding-left: 12px; }
+.analysis-block ul { list-style: disc; padding-left: 28px; }
+/* ========== 空状态 ========== */
+.empty { text-align: center; padding: 48px 0; color: #b2bec3; font-size: 14px; }
+/* ========== 弹窗 ========== */
+.modal-mask { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.35); z-index: 200; align-items: center; justify-content: center; }
+.modal-mask.show { display: flex; }
+.modal { background: #fff; border-radius: 12px; padding: 24px; width: 520px; max-width: 92vw; max-height: 80vh; overflow-y: auto; }
+.modal h3 { margin-bottom: 16px; font-size: 16px; }
+.modal .form-group { margin-bottom: 12px; }
+.modal label { display: block; font-size: 13px; color: #636e72; margin-bottom: 4px; }
+.modal input[type="text"], .modal textarea, .modal input[type="number"] { width: 100%; }
+.modal input[type="number"] { border: 1px solid #ddd; border-radius: 8px; padding: 8px 12px; font-size: 14px; outline: none; width: 100%; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+/* ========== 工具条 ========== */
+.toolbar { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+/* ========== 响应式 ========== */
+@media (max-width: 640px) {
+  .tab { padding: 8px 14px; font-size: 13px; }
+  .op-card, .result-area { padding: 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== 顶部导航 ==================== -->
+<div class="header">
+  <h1>校招求职 · 新媒体选题生成库</h1>
+  <div class="tabs">
+    <div class="tab active" data-page="page-keyword">关键词生成选题</div>
+    <div class="tab" data-page="page-fixed">固定类型生成</div>
+    <div class="tab" data-page="page-hotspot">站内热点库</div>
+    <div class="tab" data-page="page-analyze">内容拆解</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ==================== 页面1：关键词生成选题 ==================== -->
+<div class="page active" id="page-keyword">
+  <div class="op-card">
+    <h3>输入关键词，生成校招求职选题</h3>
+    <div class="op-row">
+      <input type="text" id="kw-input" placeholder="输入1-3个关键词，用空格或逗号分隔（如：春招 大厂 简历）">
+      <button class="btn btn-primary" onclick="generateByKeyword()">生成选题</button>
+    </div>
+    <div id="kw-longtail" style="font-size:12px;color:#636e72;margin-top:4px;"></div>
+  </div>
+  <div class="result-area" id="kw-result">
+    <h3>生成结果</h3>
+    <div class="empty">输入关键词后点击「生成选题」，基于普通选题生成规则随机组合生成选题</div>
+  </div>
+</div>
+
+<!-- ==================== 页面2：固定内容类型生成 ==================== -->
+<div class="page" id="page-fixed">
+  <div class="op-card">
+    <h3>选择内容类型，生成对应选题</h3>
+    <div class="op-row">
+      <select id="fixed-type-select"></select>
+      <button class="btn btn-primary" onclick="generateByFixedType()">生成选题</button>
+      <button class="btn btn-outline btn-sm" onclick="showAddTypeModal()">+ 添加内容类型</button>
+    </div>
+    <div id="fixed-type-desc" style="font-size:12px;color:#636e72;margin-top:4px;"></div>
+  </div>
+  <div class="result-area" id="fixed-result">
+    <h3>生成结果</h3>
+    <div class="empty">选择内容类型后点击「生成选题」</div>
+  </div>
+</div>
+
+<!-- ==================== 页面3：站内热点库 ==================== -->
+<div class="page" id="page-hotspot">
+  <div class="op-card">
+    <h3>站内实时热点</h3>
+    <div class="op-row">
+      <button class="btn btn-primary" onclick="loadHotspots()">刷新热点列表</button>
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('hotspot-import-file').click()">导入热点JSON</button>
+      <input type="file" id="hotspot-import-file" accept=".json" style="display:none;" onchange="importHotspotJSON(this)">
+      <span style="font-size:12px;color:#b2bec3;" id="hotspot-time"></span>
+    </div>
+    <div style="font-size:11px;color:#b2bec3;margin-top:4px;">支持导入 fetch_hotpoints.py 输出的 JSON 文件，自动替换当前热点数据</div>
+  </div>
+  <div class="result-area" id="hotspot-list">
+    <h3>热点列表（按热度排序）</h3>
+    <div class="empty">点击「刷新热点数据」加载热点</div>
+  </div>
+  <!-- 热点关联选题结果 -->
+  <div class="result-area" id="hotspot-topic-result" style="margin-top:16px;display:none;">
+    <h3>热点关联选题</h3>
+  </div>
+</div>
+
+<!-- ==================== 页面4：内容拆解 ==================== -->
+<div class="page" id="page-analyze">
+  <div class="op-card">
+    <h3>粘贴内容，一键拆解 + 输出优化建议</h3>
+    <div class="form-group" style="margin-bottom:10px;">
+      <textarea id="analyze-content" placeholder="粘贴完整内容（标题+正文）..."></textarea>
+    </div>
+    <div class="op-row">
+      <input type="text" id="analyze-channel" placeholder="发布渠道（选填，如小红书）" style="max-width:160px;">
+      <input type="text" id="analyze-reads" placeholder="阅读量（选填）" style="max-width:120px;">
+      <input type="text" id="analyze-interact" placeholder="互动量（选填）" style="max-width:120px;">
+      <input type="text" id="analyze-score" placeholder="内容评分（选填，1-10）" style="max-width:140px;">
+      <button class="btn btn-primary" onclick="analyzeContent()">开始拆解</button>
+    </div>
+  </div>
+  <div class="result-area" id="analyze-result">
+    <h3>拆解结果</h3>
+    <div class="empty">粘贴内容后点击「开始拆解」，将输出结构拆解 + 优化建议</div>
+  </div>
+  <div style="margin-top:16px;">
+    <div class="toolbar">
+      <button class="btn btn-outline btn-sm" onclick="showAddHitModal()">+ 手动添加爆款</button>
+      <button class="btn btn-outline btn-sm" onclick="exportHitLib()">导出爆款库</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- .main -->
+
+<!-- ==================== 弹窗：添加内容类型 ==================== -->
+<div class="modal-mask" id="modal-add-type">
+  <div class="modal">
+    <h3>添加固定内容类型</h3>
+    <div class="form-group"><label>类型名称</label><input type="text" id="new-type-name" placeholder="如：面经合集选题"></div>
+    <div class="form-group"><label>生成规则描述</label><textarea id="new-type-rule" placeholder="描述该类型的选题生成规则，如必须包含哪些元素、关键词要求等"></textarea></div>
+    <div class="form-group"><label>必含关键词（逗号分隔）</label><input type="text" id="new-type-keywords" placeholder="如：面经,大厂,春招"></div>
+    <div class="modal-footer">
+      <button class="btn btn-sm" onclick="closeModal('modal-add-type')">取消</button>
+      <button class="btn btn-primary btn-sm" onclick="saveNewType()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 弹窗：手动添加爆款 ==================== -->
+<div class="modal-mask" id="modal-add-hit">
+  <div class="modal">
+    <h3>手动添加爆款到库</h3>
+    <div class="form-group"><label>标题 *</label><input type="text" id="hit-title" placeholder="爆款标题"></div>
+    <div class="form-group"><label>内容摘要</label><textarea id="hit-summary" rows="3" placeholder="核心内容概要"></textarea></div>
+    <div class="form-group"><label>发布渠道</label><input type="text" id="hit-channel" placeholder="如小红书、公众号"></div>
+    <div class="form-group"><label>阅读量</label><input type="number" id="hit-reads" placeholder="0"></div>
+    <div class="form-group"><label>互动量</label><input type="number" id="hit-interact" placeholder="0"></div>
+    <div class="form-group"><label>爆款指数（1-10）</label><input type="number" id="hit-score" min="1" max="10" step="0.1" placeholder="8.0"></div>
+    <div class="form-group"><label>关键词（逗号分隔）</label><input type="text" id="hit-keywords" placeholder="春招,大厂,面经"></div>
+    <div class="form-group"><label>内容结构描述</label><textarea id="hit-structure" rows="2" placeholder="如：开头钩子+正文分点+结尾引导关注"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-sm" onclick="closeModal('modal-add-hit')">取消</button>
+      <button class="btn btn-primary btn-sm" onclick="saveNewHit()">存入爆款库</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==================================================================
+   校招求职新媒体选题生成库 - 核心逻辑
+   存储：全部使用 localStorage，刷新不丢失
+   ================================================================== */
+
+// ==================== 数据初始化 ====================
+
+/** 初始化关键词库（来自实际xlsx数据提取的高频关键词） */
+function initKeywordLib() {
+  if (localStorage.getItem('keywordLib')) return;
+  const lib = {
+    "春招": ["春招信息汇总","银行春招2026","央国企春招","春招补录","春招简历","春招面试","春招时间线","春招网申","春招笔试","春招offer"],
+    "秋招": ["秋招面试","秋招时间线","秋招提前批","秋招简历","秋招笔试","秋招补录","秋招什么时候开始","秋招网申","秋招offer","秋招准备"],
+    "面试": ["面试常见问题及回答技巧","面试穿搭","面试自我介绍","AI面试","面试复盘","面试紧张怎么办","面试话术","面试技巧","群面技巧","面试反问环节"],
+    "简历": ["简历模板","简历怎么写大学生","简历自我评价","简历项目经验","简历照片","简历优化","简历投递技巧","简历模板免费","应届生简历","实习简历"],
+    "实习": ["暑期实习","日常实习","实习转正","大厂实习","实习简历","实习面试","小红书暑期实习","华为暑期实习","字节实习","腾讯实习"],
+    "大厂": ["字节跳动","腾讯","阿里巴巴","华为","美团","京东","小米","百度","网易","快手"],
+    "校招": ["校招时间线","校招礼盒","管培生","校招网申","校招简历","校招补录","校招笔试","校招面试","应届生校招","校招offer"],
+    "求职": ["找工作","求职平台","boss直聘","求职技巧","求职焦虑","求职信息差","求职避坑","求职心态","应届求职","求职方向"],
+    "国企": ["央国企招聘","国企面试","国企待遇","国企春招","国企秋招","央企排名","国企笔试","烟草招聘","电网招聘","国企实习"],
+    "考公": ["省考","国考","事业编","三支一扶","西部计划","选调生","公务员面试","行测","申论","考公时间线"],
+    "应届生": ["应届生身份","应届生找工作","应届生简历","应届生考公","应届生落户","应届生求职","三方协议","报到证","档案","就业协议"],
+    "面经": ["面经分享","大厂面经","国企面经","银行面经","互联网面经","产品面经","技术面经","HR面经","群面面经","终面面经"],
+    "大模型": ["大模型学习路线","大模型面试","大模型实习","AI大模型","大模型开发","大模型微调","多模态大模型","大模型面经","大模型简历","大模型岗位"],
+    "暑期实习": ["暑期实习时间线","暑期实习面试","暑期实习简历","大厂暑期实习","银行暑期实习","华为暑期实习","字节暑期实习","腾讯暑期实习","小红书暑期实习","暑期实习准备"],
+    "27届": ["27届暑期实习","27届秋招时间线","27届考公","27届实习","27届毕业生","27届央国企","27届春招","27届校招","27届找工作","27届简历"]
+  };
+  localStorage.setItem('keywordLib', JSON.stringify(lib));
+}
+
+/** 初始化爆款库（来自实际历史数据提取的高流量内容） */
+function initHitLib() {
+  if (localStorage.getItem('hitLib')) return;
+  const hits = [
+    { id: 1, title: "26届春招｜这8家央企神仙待遇，应届生冲！", score: 9.2, keywords: ["春招","央企","应届生","待遇"], channel: "小红书", reads: 85000, interact: 6200, structure: "钩子开头（数字+利益点）+分点列举公司+结尾引导收藏", hookType: "利益钩子", bodyLogic: "清单体-逐一列举", endGuide: "引导收藏+评论区补充" },
+    { id: 2, title: "求求应届生别再海投了！这个方法让我一周拿3个offer", score: 9.0, keywords: ["应届生","求职","offer","面试"], channel: "小红书", reads: 72000, interact: 5800, structure: "痛点开头+个人经历+方法论分享+成果展示", hookType: "痛点钩子", bodyLogic: "故事线+方法论", endGuide: "引导关注+私信领资料" },
+    { id: 3, title: "字节跳动春招开了！25届/26届都能投的岗位汇总", score: 9.5, keywords: ["字节跳动","春招","校招","岗位汇总"], channel: "小红书", reads: 120000, interact: 9500, structure: "热点时效+岗位分类列举+投递入口指引", hookType: "时效钩子", bodyLogic: "信息聚合-分类整理", endGuide: "引导收藏+转发给同学" },
+    { id: 4, title: "面试被问'你的缺点是什么'，这样回答直接加分", score: 8.8, keywords: ["面试","面试技巧","求职","回答技巧"], channel: "小红书", reads: 65000, interact: 4300, structure: "场景还原+错误示范+正确话术+面试官视角分析", hookType: "悬念钩子", bodyLogic: "对比式-错误vs正确", endGuide: "引导评论互动" },
+    { id: 5, title: "广东应届生看这里！这15家国企待遇好到离谱", score: 8.5, keywords: ["广东","应届生","国企","待遇"], channel: "小红书", reads: 58000, interact: 3900, structure: "地域定位+数量钩子+公司逐一列举+薪资信息", hookType: "利益钩子", bodyLogic: "清单体-带数据", endGuide: "引导收藏+评论区问城市" },
+    { id: 6, title: "简历石沉大海？HR告诉你这5个致命错误", score: 8.7, keywords: ["简历","HR","求职","避坑"], channel: "公众号", reads: 45000, interact: 3200, structure: "痛点共鸣+专业背书+分点避坑+修改示例", hookType: "痛点钩子", bodyLogic: "问题清单+解决方案", endGuide: "引导关注获取简历模板" },
+    { id: 7, title: "实习3个月，我从腾讯学到了这些求职真相", score: 8.3, keywords: ["实习","腾讯","大厂","求职"], channel: "小红书", reads: 52000, interact: 4100, structure: "身份标签+经历分享+干货提炼+感悟总结", hookType: "身份钩子", bodyLogic: "时间线叙事+观点提炼", endGuide: "引导评论区交流" },
+    { id: 8, title: "26春招补录最后一波！这些公司还在招人", score: 9.1, keywords: ["春招","补录","校招","招聘"], channel: "小红书", reads: 93000, interact: 7100, structure: "紧迫感开头+公司清单+投递链接+截止时间", hookType: "稀缺钩子", bodyLogic: "信息聚合-时效性强", endGuide: "引导转发+收藏" },
+    { id: 9, title: "大模型岗位薪资曝光！应届生年薪可达40w+", score: 8.6, keywords: ["大模型","薪资","应届生","AI"], channel: "公众号", reads: 67000, interact: 5300, structure: "数据冲击+岗位分类+薪资对比+学习路径建议", hookType: "数据钩子", bodyLogic: "数据驱动-对比分析", endGuide: "引导关注获取学习路线" },
+    { id: 10, title: "27届注意！暑期实习时间线+准备清单全整理", score: 8.9, keywords: ["27届","暑期实习","时间线","准备"], channel: "小红书", reads: 78000, interact: 6000, structure: "人群定位+时间线梳理+each阶段任务+资料清单", hookType: "身份钩子", bodyLogic: "时间线+行动清单", endGuide: "引导收藏+评论打卡" },
+    { id: 11, title: "牛客APP测评｜求职必备的6个隐藏功能", score: 8.2, keywords: ["牛客","APP","求职工具","测评"], channel: "小红书", reads: 41000, interact: 2800, structure: "产品测评+功能分点展示+使用场景+对比优势", hookType: "好奇钩子", bodyLogic: "测评体-逐功能展示", endGuide: "引导下载体验" },
+    { id: 12, title: "北京｜26届春招央国企合集，有编制有户口！", score: 8.8, keywords: ["北京","春招","央国企","编制","户口"], channel: "小红书", reads: 71000, interact: 5500, structure: "地域+身份限定+公司清单+核心待遇标注", hookType: "利益钩子", bodyLogic: "清单体-带核心数据标注", endGuide: "引导收藏+评论区问具体公司" },
+    { id: 13, title: "秋招面试穿什么？不同场景穿搭指南（男女生都有）", score: 8.1, keywords: ["秋招","面试","穿搭","指南"], channel: "小红书", reads: 39000, interact: 3500, structure: "场景分类+穿搭方案+避雷提醒+购买推荐", hookType: "场景钩子", bodyLogic: "分场景指南体", endGuide: "引导收藏+评论分享穿搭" },
+    { id: 14, title: "考公还是进大厂？这篇分析帮你想清楚", score: 8.4, keywords: ["考公","大厂","职业选择","应届生"], channel: "公众号", reads: 55000, interact: 4600, structure: "两难痛点+多维度对比+不同人群建议+决策框架", hookType: "痛点钩子", bodyLogic: "对比分析+决策树", endGuide: "引导评论投票" },
+    { id: 15, title: "面试自我介绍万能模板！1分钟版本直接背", score: 9.0, keywords: ["面试","自我介绍","模板","话术"], channel: "小红书", reads: 88000, interact: 7200, structure: "痛点场景+万能模板+填空式教学+实例演示", hookType: "利益钩子", bodyLogic: "模板+填空教学", endGuide: "引导收藏+评论区要更多模板" }
+  ];
+  localStorage.setItem('hitLib', JSON.stringify(hits));
+}
+
+/** 初始化固定内容类型（预设2个 + 用户可扩展） */
+function initContentTypes() {
+  if (localStorage.getItem('contentTypes')) return;
+  const types = [
+    {
+      id: 'company-collection',
+      name: '公司合集选题',
+      rule: '必须结合求职节点（春招/秋招/补录），带地域/人群/专业相关关键词。标题模板：①目标人群+数量+决策点 ②痛点+数量+决策点 ③稀缺紧迫+数量+决策点。内容须含：公司名称、岗位类型、薪资范围、核心待遇。',
+      requiredKeywords: ['春招,秋招,补录,校招', '广东,北京,上海,江浙,成都,武汉,全国', '应届生,26届,27届,研究生,本科']
+    },
+    {
+      id: 'image-text-direct',
+      name: '图文直发选题',
+      rule: '必须是APP单推或测评合集，带大厂/春招相关关键词或功能热点。类型一：单APP推广（专业背书/功能亮点/效率提升/AI功能/真实评测角度）。类型二：工具/APP合集（求职工具对比/面试准备合集/简历制作推荐）。须带牛客相关转化引导。',
+      requiredKeywords: ['牛客,APP,求职工具,测评', '春招,大厂,AI面试,刷题', '面经,简历,笔试,面试']
+    }
+  ];
+  localStorage.setItem('contentTypes', JSON.stringify(types));
+}
+
+/** 初始化热点库 —— 从远程 JSON 加载最新数据
+ *  数据源：nowcoder_hotpoints.json（由 fetch_hotpoints.py 生成）
+ *  每次打开页面自动拉取最新数据，无需手动导入 */
+async function initHotspots() {
+  try {
+    const resp = await fetch('nowcoder_hotpoints.json?' + Date.now());
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const hotpoints = data.hotpoints || data;
+    hotpoints.forEach((h, i) => { if (!h.id) h.id = i + 1; });
+    localStorage.setItem('hotspots', JSON.stringify(hotpoints));
+    localStorage.setItem('hotspots_fetchTime', data.fetchTime || new Date().toISOString());
+    loadHotspots();
+    return;
+  } catch (e) {
+    console.warn('远程热点数据加载失败，使用本地缓存:', e.message);
+  }
+  // 远程失败时，若本地有缓存则直接渲染
+  if (localStorage.getItem('hotspots')) {
+    loadHotspots();
+  }
+}
+// ==================== 页面切换 ====================
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById(this.dataset.page).classList.add('active');
+  });
+});
+
+// ==================== 弹窗控制 ====================
+function showAddTypeModal() { document.getElementById('modal-add-type').classList.add('show'); }
+function showAddHitModal() { document.getElementById('modal-add-hit').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+// 点击蒙层关闭
+document.querySelectorAll('.modal-mask').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+});
+
+// ==================== 核心功能1：关键词生成选题 ====================
+
+/** 从关键词库中获取匹配的长尾词 */
+function getRelatedLongtails(keywords) {
+  const lib = JSON.parse(localStorage.getItem('keywordLib') || '{}');
+  let tails = [];
+  keywords.forEach(kw => {
+    // 精确匹配
+    if (lib[kw]) { tails = tails.concat(lib[kw].slice(0, 5)); }
+    // 模糊匹配
+    Object.keys(lib).forEach(key => {
+      if (key !== kw && (key.includes(kw) || kw.includes(key))) {
+        tails = tails.concat(lib[key].slice(0, 3));
+      }
+    });
+  });
+  return [...new Set(tails)].slice(0, 12);
+}
+
+/**
+ * 普通选题生成引擎 —— 基于《普通选题生成规则》四大公式
+ * 公式1（高点击率）：情绪词 + 人群词 + 痛点对比 + 数字/符号
+ * 公式2（强共鸣）：第二人称 + 人群词 + 锐评观点 + 痛点结果
+ * 公式3（蹭趋势）：口语化表达 + 热词 + 数字 + 痛点对比
+ * 公式4（直给型）：锐评观点 + 人群词 + 冲突点 + 抓眼符号
+ * 每次生成完全随机组合，不自动匹配爆款库
+ */
+function generateTopics(keywords, longtails, count) {
+  // —— 元素库（来自普通选题生成规则.docx提取） ——
+  const R = arr => arr[Math.floor(Math.random() * arr.length)]; // 随机取一个
+
+  // 情绪词库（高点击率公式用）
+  const emoWords = [
+    '求求了','后悔没早知道','救命','真心建议','我愿称之为','看完直接起飞',
+    '偷偷告诉你','血泪教训','一定要收藏','亲测有效','天花板','绝了',
+    '太离谱了','笑死','破防了','我不允许还有人不知道','姐妹们冲',
+    '打工人必看','建议反复看3遍','这也太绝了','醒醒吧','说句实话'
+  ];
+  // 人群词库
+  const audWords = [
+    '应届生','26届','27届','大学生','考研党','转码选手','文科生',
+    '双非同学','研究生','留学生','计算机专业','实习生','打工人',
+    '985/211','本科生','专科生','考公人','HR','小白','零经验选手',
+    '秋招人','春招党','28届','女生','理工科','非CS专业'
+  ];
+  // 热词/趋势词库
+  const hotWords = [
+    '字节跳动','腾讯','阿里巴巴','华为','美团','京东','小米','百度','网易',
+    '快手','小红书','DeepSeek','大模型','AI','AIGC','央国企','银行',
+    '考公','春招','秋招','暑期实习','补录','管培生','外企','互联网',
+    '年薪30w','offer','简历','面试','笔试','牛客','boss直聘'
+  ];
+  // 痛点/对比词库
+  const painWords = [
+    '海投100份0回复','面试总挂','简历石沉大海','offer选择困难',
+    '大厂卷不动了','薪资倒挂','实习转正失败','被毁约','gap year焦虑',
+    '学历歧视','年龄焦虑','考研vs就业','国企vs互联网','offer已读不回',
+    '面试紧张说不出话','HR已读不回','投了500份简历','裸辞后悔了',
+    '实习工资不够房租','群面社恐','竞争太激烈','行业不景气'
+  ];
+  // 锐评观点库
+  const sharpWords = [
+    '别再海投了','这才是正确姿势','说个大实话','反常识操作',
+    '99%的人都踩过的坑','内行人才知道','面试官不会告诉你的',
+    'HR看简历只看这3点','你以为的vs实际的','真相是',
+    '行业内卷但这条路没人走','别被鸡汤骗了','清醒一点',
+    '这波操作直接封神','格局打开','换个思路就通了',
+    '信息差才是核心竞争力','认知升级','降维打击'
+  ];
+  // 数字符号库
+  const numSymbols = [
+    '3','5','6','7','8','10','15','20','50','100',
+    '⚡','🔥','❗','💡','📌','✅','💰','🎯','⭐','📊'
+  ];
+  // 口语化表达库
+  const colloquials = [
+    '啊啊啊','姐妹','兄弟们','家人们','宝子们','我真的会谢',
+    '不是吧','好家伙','绷不住了','属实是','蚌埠住了',
+    '笑不活了','我哭死','太真实了','就离谱','DNA动了',
+    '谁懂啊','难绷','这谁顶得住','建议收藏'
+  ];
+  // 结尾引导方式
+  const endGuides = [
+    '引导收藏+转发给同学','引导评论互动讨论','引导关注获取完整资料',
+    '引导评论区打卡签到','引导收藏码住慢慢看','引导私信领取模板',
+    '引导评论区许愿上岸','引导投票选择','引导分享个人经历'
+  ];
+  // 内容结构模板
+  const structures = [
+    '清单体（分点罗列干货）','故事线+方法论','对比式（错误vs正确示范）',
+    '时间线+行动清单','测评体（多维度对比打分）','数据驱动分析',
+    '模板+填空式教学','问答体（常见问题逐一解答）','经验复盘+避坑指南',
+    '信息聚合（一文汇总全网）','场景化指南（分场景给方案）'
+  ];
+
+  const topics = [];
+  const usedFormulas = new Set(); // 确保每个选题用不同公式
+
+  for (let i = 0; i < count; i++) {
+    const kw = R(keywords);
+    const tail = longtails.length > 0 ? R(longtails) : kw;
+    const emo = R(emoWords);
+    const aud = R(audWords);
+    const hot = R(hotWords);
+    const pain = R(painWords);
+    const sharp = R(sharpWords);
+    const num = R(numSymbols);
+    const oral = R(colloquials);
+    const endG = R(endGuides);
+    const struct = R(structures);
+
+    // 四大标题公式 + 额外变体，确保高度随机
+    const allFormulas = [
+      // 公式1：高点击率 = 情绪词 + 人群词 + 痛点对比 + 数字/符号
+      () => `${emo}！${aud}${kw}${pain.slice(0,6)}，${num}个方法直接逆袭`,
+      () => `${emo}｜${aud}必看的${num}条${kw}真相，别再${pain.slice(0,8)}`,
+      () => `${aud}${emo}！${kw}这${num}个坑千万别踩`,
+      // 公式2：强共鸣 = 第二人称 + 人群词 + 锐评观点 + 痛点结果
+      () => `你还在${pain.slice(0,8)}？${aud}${sharp}`,
+      () => `${aud}醒醒吧！${sharp}，${kw}这样做才对`,
+      () => `如果你是${aud}还在${pain.slice(0,6)}，${sharp}`,
+      // 公式3：蹭趋势 = 口语化 + 热词 + 数字 + 痛点对比
+      () => `${oral}！${hot}${kw}${num}条内幕，${pain.slice(0,8)}的都看看`,
+      () => `${oral}${hot}最新${kw}消息！${num}个变化${aud}必须知道`,
+      () => `${hot}+${kw}｜${oral}这${num}个信息差太重要了`,
+      // 公式4：直给型 = 锐评观点 + 人群词 + 冲突点 + 符号
+      () => `${sharp}！${aud}的${kw}${num}大误区 ${R(numSymbols)}`,
+      () => `${sharp}，${aud}${kw}少走弯路的${num}条建议`,
+      () => `${kw}｜${sharp}，${aud}看完少踩${num}个坑`,
+      // 额外变体：混合公式
+      () => `${aud}${kw}指南｜${sharp}，${num}步搞定${tail}`,
+      () => `${oral}！${aud}的${tail}竟然可以这样？${sharp}`,
+      () => `${num}个${kw}${tail}技巧，${aud}${emo}`,
+      () => `${hot}${kw}最新攻略！${aud}${pain.slice(0,6)}看这篇就够了`,
+    ];
+
+    // 随机选一个公式，尽量不重复
+    let formulaIdx;
+    let attempts = 0;
+    do {
+      formulaIdx = Math.floor(Math.random() * allFormulas.length);
+      attempts++;
+    } while (usedFormulas.has(formulaIdx) && attempts < 20);
+    usedFormulas.add(formulaIdx);
+
+    const title = allFormulas[formulaIdx]();
+    const formulaName = formulaIdx < 3 ? '公式1·高点击率' : formulaIdx < 6 ? '公式2·强共鸣' : formulaIdx < 9 ? '公式3·蹭趋势' : formulaIdx < 12 ? '公式4·直给型' : '混合变体';
+
+    // 随机组合使用的关键词（确保多样性）
+    const usedKws = [...new Set([kw, tail, R(keywords), longtails.length > 0 ? R(longtails) : kw])].slice(0, 4);
+
+    topics.push({
+      title,
+      formulaName,
+      highlights: `${struct} → ${endG}`,
+      keywords: usedKws,
+      structure: struct,
+      endGuide: endG
+    });
+  }
+  return topics;
+}
+
+/** 关键词生成选题 - 主入口（纯规则驱动，不匹配爆款库） */
+function generateByKeyword() {
+  const input = document.getElementById('kw-input').value.trim();
+  if (!input) { alert('请输入至少1个关键词'); return; }
+
+  const keywords = input.split(/[\s,，、]+/).filter(Boolean).slice(0, 3);
+  const longtails = getRelatedLongtails(keywords);
+
+  // 展示长尾词
+  const ltDiv = document.getElementById('kw-longtail');
+  if (longtails.length > 0) {
+    ltDiv.innerHTML = '关联长尾词：' + longtails.map(t => `<span class="tag">${t}</span>`).join('');
+  }
+
+  // 生成3-5个选题
+  const count = 3 + Math.floor(Math.random() * 3);
+  const topics = generateTopics(keywords, longtails, count);
+
+  // 渲染结果
+  const resultDiv = document.getElementById('kw-result');
+  resultDiv.innerHTML = '<h3>生成结果（' + topics.length + '个选题）</h3>';
+  resultDiv.innerHTML += '<div style="margin-bottom:12px;font-size:12px;color:#636e72;">生成规则：普通选题4大公式随机组合 × 关键词库长尾词扩展</div>';
+
+  topics.forEach(t => {
+    resultDiv.innerHTML += `
+      <div class="topic-card">
+        <div class="title">${t.title}</div>
+        <div class="meta">
+          <div>生成公式：<span class="tag green">${t.formulaName}</span></div>
+          <div>内容结构：${t.highlights}</div>
+          <div>使用关键词：${t.keywords.map(k => '<span class="tag blue">' + k + '</span>').join('')}</div>
+        </div>
+      </div>`;
+  });
+}
+
+// ==================== 核心功能2：固定内容类型生成 ====================
+
+/** 渲染类型下拉框 */
+function renderTypeSelect() {
+  const types = JSON.parse(localStorage.getItem('contentTypes') || '[]');
+  const sel = document.getElementById('fixed-type-select');
+  sel.innerHTML = types.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+
+  // 切换时显示描述
+  sel.onchange = function() {
+    const type = types.find(t => t.id === this.value);
+    document.getElementById('fixed-type-desc').textContent = type ? type.rule : '';
+  };
+  if (types.length > 0) sel.onchange();
+}
+
+/** 固定类型生成选题 */
+function generateByFixedType() {
+  const types = JSON.parse(localStorage.getItem('contentTypes') || '[]');
+  const typeId = document.getElementById('fixed-type-select').value;
+  const type = types.find(t => t.id === typeId);
+  if (!type) { alert('请先选择内容类型'); return; }
+
+  const hits = JSON.parse(localStorage.getItem('hitLib') || '[]');
+  const resultDiv = document.getElementById('fixed-result');
+  resultDiv.innerHTML = '<h3>「' + type.name + '」生成结果</h3>';
+
+  if (typeId === 'company-collection') {
+    // 公司合集选题生成逻辑
+    const regions = ['广东','北京','上海','江浙','成都','武汉','全国'];
+    const nodes = ['春招','秋招','补录','暑期实习'];
+    const peoples = ['应届生','26届','27届','研究生','本科双非'];
+    const companyTypes = ['央企','国企','外企','大厂','独角兽'];
+    const benefits = ['年薪20w+','有编制','解决户口','包食宿','不加班','双休','六险二金','年终6个月'];
+
+    const templates = [
+      (r,n,p,c,b,num) => `${p}看这里！${r}${num}家${c}${n}还在招，${b}`,
+      (r,n,p,c,b,num) => `${n}最后一波｜${r}${num}家${c}合集，${b}不是梦！`,
+      (r,n,p,c,b,num) => `${p}${n}别错过！这${num}家${r}${c}${b}，赶紧投`
+    ];
+
+    for (let i = 0; i < 3; i++) {
+      const r = regions[Math.floor(Math.random() * regions.length)];
+      const n = nodes[Math.floor(Math.random() * nodes.length)];
+      const p = peoples[Math.floor(Math.random() * peoples.length)];
+      const c = companyTypes[Math.floor(Math.random() * companyTypes.length)];
+      const b = benefits[Math.floor(Math.random() * benefits.length)];
+      const num = [8,10,12,15,20][Math.floor(Math.random() * 5)];
+      const title = templates[i](r,n,p,c,b,num);
+
+      // 匹配参考爆款
+      const refHit = hits.find(h => h.keywords.some(k => [n,r,c].some(w => k.includes(w) || w.includes(k))));
+
+      resultDiv.innerHTML += `
+        <div class="topic-card">
+          <div class="title">${title}</div>
+          <div class="meta">
+            <div>内容类型：<span class="tag green">公司合集</span></div>
+            <div>求职节点：<span class="tag">${n}</span> 地域：<span class="tag">${r}</span> 人群：<span class="tag">${p}</span></div>
+            <div>必含元素：公司名称+岗位类型+核心待遇（${b}）</div>
+            ${refHit ? '<div>参考爆款：' + refHit.title.slice(0,30) + '... (指数' + refHit.score + ')</div>' : ''}
+          </div>
+        </div>`;
+    }
+  } else if (typeId === 'image-text-direct') {
+    // 图文直发选题生成逻辑
+    const appAngles = ['专业背书','功能全面','AI智能','真实测评','效率提升','竞品对比'];
+    const collectionAngles = ['求职工具合集','面试准备神器','简历制作推荐','刷题APP对比'];
+    const hotKws = ['春招','大厂','AI面试','刷题','面经','笔试'];
+
+    const templates = [
+      (angle, kw) => `${kw}必备｜测评了10个求职APP，这个${angle}真的绝了`,
+      (angle, kw) => `${kw}季｜${angle}，求职效率直接翻倍！`,
+      (angle, kw) => `打工人都在用的${angle}，${kw}找工作太方便了`
+    ];
+
+    for (let i = 0; i < 3; i++) {
+      const isCollection = i >= 2;
+      const angle = isCollection ? collectionAngles[Math.floor(Math.random() * collectionAngles.length)] : appAngles[Math.floor(Math.random() * appAngles.length)];
+      const kw = hotKws[Math.floor(Math.random() * hotKws.length)];
+      const title = templates[i](angle, kw);
+
+      resultDiv.innerHTML += `
+        <div class="topic-card">
+          <div class="title">${title}</div>
+          <div class="meta">
+            <div>内容类型：<span class="tag green">图文直发</span> ${isCollection ? '<span class="tag">测评合集</span>' : '<span class="tag">APP单推</span>'}</div>
+            <div>推广角度：<span class="tag blue">${angle}</span> 热点关键词：<span class="tag">${kw}</span></div>
+            <div>必含元素：产品功能截图+使用场景+转化引导（牛客下载/注册）</div>
+          </div>
+        </div>`;
+    }
+  } else {
+    // 用户自定义类型 - 通用生成逻辑
+    const reqKws = type.requiredKeywords || [];
+    const allKws = reqKws.flatMap(g => g.split(',')).filter(Boolean);
+    const emotions = ['必看','强推','收藏','干货','真心建议'];
+
+    for (let i = 0; i < 3; i++) {
+      const kws = [];
+      // 每组必含关键词随机取一个
+      reqKws.forEach(group => {
+        const arr = group.split(',').filter(Boolean);
+        if (arr.length > 0) kws.push(arr[Math.floor(Math.random() * arr.length)]);
+      });
+      const emo = emotions[Math.floor(Math.random() * emotions.length)];
+      const title = `${emo}！${kws.join('+')}，${type.name.replace('选题','')}全攻略`;
+
+      resultDiv.innerHTML += `
+        <div class="topic-card">
+          <div class="title">${title}</div>
+          <div class="meta">
+            <div>内容类型：<span class="tag green">${type.name}</span></div>
+            <div>使用关键词：${kws.map(k => '<span class="tag blue">' + k + '</span>').join('')}</div>
+            <div>生成规则：${type.rule.slice(0, 80)}...</div>
+          </div>
+        </div>`;
+    }
+  }
+}
+
+/** 保存新内容类型 */
+function saveNewType() {
+  const name = document.getElementById('new-type-name').value.trim();
+  const rule = document.getElementById('new-type-rule').value.trim();
+  const keywords = document.getElementById('new-type-keywords').value.trim();
+  if (!name || !rule) { alert('请填写类型名称和生成规则'); return; }
+
+  const types = JSON.parse(localStorage.getItem('contentTypes') || '[]');
+  types.push({
+    id: 'custom-' + Date.now(),
+    name,
+    rule,
+    requiredKeywords: keywords ? [keywords] : []
+  });
+  localStorage.setItem('contentTypes', JSON.stringify(types));
+  renderTypeSelect();
+  closeModal('modal-add-type');
+
+  // 清空表单
+  document.getElementById('new-type-name').value = '';
+  document.getElementById('new-type-rule').value = '';
+  document.getElementById('new-type-keywords').value = '';
+  alert('内容类型已添加！');
+}
+
+// ==================== 核心功能3：站内热点库 ====================
+
+/** 从热点标题自动提取关键词 */
+function extractKeywordsFromTitle(title) {
+  const kwLib = JSON.parse(localStorage.getItem('keywordLib') || '{}');
+  const allKws = Object.keys(kwLib).concat(Object.values(kwLib).flat());
+  const matched = allKws.filter(kw => title.includes(kw));
+  if (matched.length >= 2) return [...new Set(matched)].slice(0, 3);
+  // 如果关键词库匹配不足，从标题分词补充
+  const fallbackKws = ['面试','简历','实习','春招','秋招','offer','大厂','国企','薪资',
+    '校招','求职','考研','考公','笔试','面经','大模型','AI','字节','腾讯','阿里','华为',
+    '美团','百度','网易','小红书','银行','外企','前端','后端','算法','测试','产品'];
+  const extra = fallbackKws.filter(k => title.includes(k));
+  return [...new Set([...matched, ...extra])].slice(0, 3);
+}
+
+/** 加载并展示热点列表 —— 展示来自牛客Metabase的真实热点数据 */
+function loadHotspots() {
+  const hotspots = JSON.parse(localStorage.getItem('hotspots') || '[]');
+  // 按 CVR 降序排列（与 fetch_hotpoints.py 一致）
+  hotspots.sort((a, b) => (b.cvr || 0) - (a.cvr || 0));
+
+  document.getElementById('hotspot-time').textContent = '数据来源：牛客Metabase · 共 ' + hotspots.length + ' 条 · ' + new Date().toLocaleString();
+
+  const listDiv = document.getElementById('hotspot-list');
+  listDiv.innerHTML = '<h3>热点列表（按CVR转化率排序）</h3>';
+
+  if (hotspots.length === 0) {
+    listDiv.innerHTML += '<div class="empty">暂无热点数据，请导入JSON或等待数据同步</div>';
+    return;
+  }
+
+  hotspots.forEach((h, idx) => {
+    // 从标题自动提取关键词
+    const keywords = extractKeywordsFromTitle(h.title);
+    const typeColor = {'标题吸引型':'hot','话题讨论型':'blue','干货收藏型':'green','传播裂变型':'hot','深度内容型':'blue','综合互动型':''}[h.interactionType] || '';
+
+    listDiv.innerHTML += `
+      <div class="hotspot-item" style="flex-wrap:wrap;">
+        <div class="hotspot-info">
+          <div class="ht-title">
+            ${idx + 1}. ${h.webLink ? '<a href="'+h.webLink+'" target="_blank" style="color:inherit;text-decoration:none;border-bottom:1px dashed #b2bec3;">'+h.title+'</a>' : h.title}
+          </div>
+          <div class="ht-meta">
+            <span class="heat-badge">CVR ${h.cvr}%</span>
+            <span class="tag">浏览 ${(h.viewCnt||0).toLocaleString()}</span>
+            <span class="tag">互动 ${(h.interactionTotal||0).toLocaleString()}</span>
+            <span class="tag">CTR ${h.ctr||0}%</span>
+            <span class="tag ${typeColor}">${h.interactionType||'综合'}</span>
+            <span class="tag">${h.taxonomy||''}</span>
+            <span style="margin-left:4px;color:#b2bec3;">${h.createDate||''}</span>
+          </div>
+          <div class="ht-meta" style="margin-top:2px;">
+            关键词：${keywords.map(k => '<span class="tag blue" style="font-size:11px;">'+k+'</span>').join('')}
+            ${h.suggestedPlatforms ? ' 推荐平台：' + h.suggestedPlatforms.map(p => '<span class="tag" style="font-size:11px;">'+p+'</span>').join('') : ''}
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="white-space:nowrap;margin-top:4px;" onclick="generateFromHotspot(${h.id})">一键生成关联选题</button>
+      </div>`;
+  });
+}
+
+/** 从热点一键生成关联选题（使用普通选题生成规则） */
+function generateFromHotspot(hotspotId) {
+  const hotspots = JSON.parse(localStorage.getItem('hotspots') || '[]');
+  const hotspot = hotspots.find(h => h.id === hotspotId);
+  if (!hotspot) return;
+
+  // 从热点标题提取关键词
+  const keywords = extractKeywordsFromTitle(hotspot.title);
+  if (keywords.length === 0) keywords.push(hotspot.title.slice(0, 4));
+  const longtails = getRelatedLongtails(keywords);
+  const topics = generateTopics(keywords, longtails, 3);
+
+  // 展示结果
+  const resultDiv = document.getElementById('hotspot-topic-result');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '<h3>热点关联选题 —「' + hotspot.title.slice(0, 30) + '...」</h3>';
+  resultDiv.innerHTML += '<div style="margin-bottom:8px;font-size:12px;color:#636e72;">提取关键词：' + keywords.map(k => '<span class="tag">' + k + '</span>').join('') + ' ｜ 原始热点 CVR: ' + hotspot.cvr + '% · ' + hotspot.interactionType + '</div>';
+
+  topics.forEach(t => {
+    resultDiv.innerHTML += `
+      <div class="topic-card">
+        <div class="title">${t.title}</div>
+        <div class="meta">
+          <div>生成公式：<span class="tag green">${t.formulaName}</span></div>
+          <div>内容结构：${t.highlights}</div>
+          <div>关联热点：<span class="tag hot">${hotspot.title.slice(0,25)}... (CVR ${hotspot.cvr}%)</span></div>
+          <div>使用关键词：${t.keywords.map(k => '<span class="tag blue">' + k + '</span>').join('')}</div>
+        </div>
+      </div>`;
+  });
+
+  // 滚动到结果区
+  resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ==================== 核心功能4：爆款拆解入库 ====================
+
+/** 内容拆解引擎 */
+function analyzeContent() {
+  const content = document.getElementById('analyze-content').value.trim();
+  if (!content) { alert('请粘贴爆款内容'); return; }
+
+  const channel = document.getElementById('analyze-channel').value.trim() || '未填写';
+  const reads = document.getElementById('analyze-reads').value.trim() || '未填写';
+  const interact = document.getElementById('analyze-interact').value.trim() || '未填写';
+  const score = document.getElementById('analyze-score').value.trim() || '未评分';
+
+  // 提取标题（第一行或前30字）
+  const lines = content.split('\n').filter(l => l.trim());
+  const title = lines[0] ? lines[0].trim().slice(0, 60) : content.slice(0, 60);
+  const bodyText = lines.slice(1).join('\n') || content;
+
+  // 自动提取关键词
+  const kwLib = JSON.parse(localStorage.getItem('keywordLib') || '{}');
+  const allKws = Object.keys(kwLib).concat(Object.values(kwLib).flat());
+  const extractedKws = allKws.filter(kw => content.includes(kw)).slice(0, 8);
+
+  // 判断钩子类型
+  const hookPatterns = {
+    '利益钩子': ['必备','神器','提升','翻倍','省','赚','待遇','年薪','薪资','offer'],
+    '痛点钩子': ['别再','千万不要','后悔','踩坑','血泪','避坑','石沉大海','焦虑','迷茫','难'],
+    '悬念钩子': ['竟然','没想到','意外','居然','原来','真相','揭秘','内幕'],
+    '时效钩子': ['最新','刚刚','今天','紧急','最后','倒计时','截止','开放','开启'],
+    '数据钩子': ['数据','%','万','薪资','排名','对比','涨了','降了'],
+    '身份钩子': ['我是','作为','亲历','从...到','过来人','学长','学姐'],
+    '稀缺钩子': ['最后','仅剩','限时','赶紧','抓紧','错过','名额','补录'],
+    '好奇钩子': ['为什么','怎么','如何','到底','什么','难道','是不是']
+  };
+
+  let detectedHook = '综合钩子';
+  let maxMatch = 0;
+  Object.entries(hookPatterns).forEach(([type, words]) => {
+    const count = words.filter(w => content.slice(0, 100).includes(w)).length;
+    if (count > maxMatch) { maxMatch = count; detectedHook = type; }
+  });
+
+  // 判断正文结构
+  const hasNumbers = /\d+[.、）)]\s*\S/.test(bodyText);
+  const hasBullets = /[·•●▪-]\s*\S/.test(bodyText);
+  const bodyLogic = hasNumbers ? '分点列举/清单体' : (hasBullets ? '要点罗列' : (bodyText.length > 500 ? '长文叙事/深度分析' : '短文精练/直给型'));
+
+  // 判断结尾引导
+  const endText = bodyText.slice(-100);
+  const endPatterns = {
+    '引导收藏': ['收藏','马住','存下','码住'],
+    '引导关注': ['关注','粉丝','后续','更新'],
+    '引导评论': ['评论','留言','你觉得','你们'],
+    '引导转发': ['转发','分享给','告诉'],
+    '引导私信': ['私信','领取','资料','模板']
+  };
+  let detectedEnd = '无明显引导';
+  Object.entries(endPatterns).forEach(([type, words]) => {
+    if (words.some(w => endText.includes(w))) detectedEnd = type;
+  });
+
+  // ===== 爆款六维评分（基于爆款拆解六维公式） =====
+  const sixDim = [];
+
+  // —— 维度1：选题命中度 ——
+  // 检测是否踩中：人群痛点/热点/刚需/焦虑/爽点
+  let d1Score = 0; let d1Details = [];
+  const painHitWords = ['焦虑','迷茫','难','卷','裁','挂','崩','坑','亏','慌','废'];
+  const needHitWords = ['怎么','如何','方法','技巧','攻略','指南','模板','清单','汇总','盘点'];
+  const hotHitWords = ['春招','秋招','暑期实习','补录','大模型','AI','AIGC','DeepSeek','字节','腾讯','阿里','华为'];
+  const pleasureWords = ['offer','上岸','录取','通过','逆袭','翻盘','成功','涨薪','年薪'];
+  const painCount = painHitWords.filter(w => content.includes(w)).length;
+  const needCount = needHitWords.filter(w => content.includes(w)).length;
+  const hotCount = hotHitWords.filter(w => content.includes(w)).length;
+  const pleasureCount = pleasureWords.filter(w => content.includes(w)).length;
+  if (painCount >= 2) { d1Score += 3; d1Details.push('痛点/焦虑命中✓'); }
+  else if (painCount >= 1) { d1Score += 1.5; d1Details.push('轻度痛点触达'); }
+  if (needCount >= 2) { d1Score += 2.5; d1Details.push('刚需/干货命中✓'); }
+  else if (needCount >= 1) { d1Score += 1.5; d1Details.push('有实用价值'); }
+  if (hotCount >= 1) { d1Score += 2; d1Details.push('热点关联✓'); }
+  if (pleasureCount >= 1) { d1Score += 1.5; d1Details.push('爽点/正反馈✓'); }
+  if (extractedKws.some(k => ['面试','简历','求职','实习','校招','offer'].includes(k))) { d1Score += 1; d1Details.push('核心求职场景✓'); }
+  d1Score = Math.min(10, d1Score);
+  if (d1Details.length === 0) d1Details.push('选题与热点/痛点/刚需关联偏弱');
+  sixDim.push({ name: '选题命中度', score: d1Score, details: d1Details.join('，'), desc: '是否踩中人群痛点/热点/刚需/焦虑/爽点' });
+
+  // —— 维度2：情绪钩子 ——
+  // 在已有 detectedHook 基础上，映射到六维公式的5种类型并评分
+  let d2Score = 0; let d2Details = [];
+  const emoHookMap = {
+    '疑问型': ['为什么','怎么','如何','到底','吗','难道','是不是','什么','哪个','几个'],
+    '反差型': ['竟然','没想到','居然','反转','意外','原来','真相','万万没想到','打脸'],
+    '共鸣型': ['我也','同款','终于','太真实','谁懂','破防','DNA动了','绷不住','哭死','笑死'],
+    '威胁型': ['别再','千万不要','小心','警惕','避坑','踩坑','血亏','翻车','后悔','毁了'],
+    '利益型': ['免费','必备','神器','省','赚','年薪','万','offer','福利','宝藏','攻略']
+  };
+  const first100 = content.slice(0, 120);
+  let hookTypeDetail = '无明显情绪钩子';
+  let bestHookScore = 0;
+  Object.entries(emoHookMap).forEach(([type, words]) => {
+    const cnt = words.filter(w => first100.includes(w)).length;
+    if (cnt > bestHookScore) { bestHookScore = cnt; hookTypeDetail = type; }
+  });
+  if (bestHookScore >= 3) { d2Score = 9; d2Details.push(`强${hookTypeDetail}钩子（${bestHookScore}个触发词）`); }
+  else if (bestHookScore >= 2) { d2Score = 7; d2Details.push(`${hookTypeDetail}钩子有效`); }
+  else if (bestHookScore >= 1) { d2Score = 5; d2Details.push(`${hookTypeDetail}钩子较弱`); }
+  else { d2Score = 2; d2Details.push('开头缺少情绪钩子，前3秒抓不住注意力'); }
+  // 检查首句是否直接有冲击力
+  const firstSentence = (lines[0] || '').slice(0, 30);
+  if (/[！!？?]/.test(firstSentence)) { d2Score = Math.min(10, d2Score + 1); d2Details.push('首句有感叹/疑问，节奏感好'); }
+  sixDim.push({ name: '情绪钩子', score: d2Score, details: d2Details.join('，'), desc: '开头3秒/首句如何抓住注意力（疑问/反差/共鸣/威胁/利益）' });
+
+  // —— 维度3：结构顺滑度 ——
+  // 黄金结构：钩子 → 痛点 → 解决方案 → 案例/证据 → 总结 → 行动指令
+  let d3Score = 0; let d3Details = []; let d3Segments = [];
+  // 检测各环节是否存在
+  if (maxMatch >= 1) { d3Score += 1.5; d3Segments.push('钩子✓'); } else { d3Segments.push('钩子✗'); }
+  if (painCount >= 1 || painHitWords.some(w => bodyText.slice(0, 200).includes(w))) { d3Score += 1.5; d3Segments.push('痛点✓'); } else { d3Segments.push('痛点✗'); }
+  if (needCount >= 1 || ['方法','步骤','方案','建议','技巧','要点'].some(w => bodyText.includes(w))) { d3Score += 2; d3Segments.push('方案✓'); } else { d3Segments.push('方案✗'); }
+  if (['比如','例如','案例','亲测','实测','经验','我的','真实'].some(w => bodyText.includes(w))) { d3Score += 1.5; d3Segments.push('案例✓'); } else { d3Segments.push('案例✗'); }
+  if (['总结','综上','最后','总之','一句话'].some(w => bodyText.slice(-200).includes(w)) || bodyText.length < 300) { d3Score += 1.5; d3Segments.push('总结✓'); } else { d3Segments.push('总结✗'); }
+  if (detectedEnd !== '无明显引导') { d3Score += 2; d3Segments.push('行动指令✓'); } else { d3Segments.push('行动指令✗'); }
+  d3Score = Math.min(10, d3Score);
+  const hitCount = d3Segments.filter(s => s.includes('✓')).length;
+  d3Details.push(`黄金结构命中 ${hitCount}/6：${d3Segments.join(' → ')}`);
+  sixDim.push({ name: '结构顺滑度', score: d3Score, details: d3Details.join('，'), desc: '是否符合黄金结构：钩子→痛点→方案→案例→总结→行动指令' });
+
+  // —— 维度4：信息密度 ——
+  let d4Score = 0; let d4Details = [];
+  // 检测干货指标
+  const numberMatches = (bodyText.match(/\d+/g) || []).length; // 数字出现次数
+  const listItems = (bodyText.match(/\d+[.、）)]/g) || []).length; // 分点数量
+  const bulletItems = (bodyText.match(/[·•●▪-]\s*\S/g) || []).length;
+  const totalStructureItems = listItems + bulletItems;
+  const uniqueKwCount = extractedKws.length;
+  const avgSentenceLen = bodyText.length / Math.max(1, (bodyText.match(/[。！？\n]/g) || []).length);
+
+  if (totalStructureItems >= 5) { d4Score += 3; d4Details.push(`${totalStructureItems}个分点，信息密集`); }
+  else if (totalStructureItems >= 3) { d4Score += 2; d4Details.push(`${totalStructureItems}个分点`); }
+  if (numberMatches >= 8) { d4Score += 2; d4Details.push('数据丰富（' + numberMatches + '处数字）'); }
+  else if (numberMatches >= 3) { d4Score += 1; d4Details.push('有数据支撑'); }
+  if (uniqueKwCount >= 4) { d4Score += 2; d4Details.push('关键词密度高'); }
+  else if (uniqueKwCount >= 2) { d4Score += 1; d4Details.push('关键词适中'); }
+  if (avgSentenceLen < 40 && avgSentenceLen > 5) { d4Score += 1.5; d4Details.push('句子节奏紧凑，易读性好'); }
+  if (bodyText.length >= 300 && bodyText.length <= 1500) { d4Score += 1.5; d4Details.push('篇幅适中'); }
+  else if (bodyText.length < 100) { d4Details.push('内容偏少，干货感不足'); }
+  else if (bodyText.length > 2000) { d4Details.push('篇幅过长，可能影响完读率'); }
+  d4Score = Math.min(10, d4Score);
+  if (d4Details.length === 0) d4Details.push('信息密度一般，缺少结构化干货');
+  sixDim.push({ name: '信息密度', score: d4Score, details: d4Details.join('，'), desc: '有用信息是否密集，是否有干货感和收藏欲' });
+
+  // —— 维度5：行动指令 ——
+  let d5Score = 0; let d5Details = [];
+  const ctaWords = {
+    '点赞': ['点赞','赞','双击','喜欢'],
+    '收藏': ['收藏','马住','码住','存下','保存'],
+    '评论': ['评论','留言','你觉得','说说','打卡','许愿'],
+    '关注': ['关注','粉丝','后续更新','系列'],
+    '转发': ['转发','分享给','告诉','@','艾特'],
+    '转化': ['下载','注册','链接','入口','私信','领取','扫码']
+  };
+  const detectedCTAs = [];
+  Object.entries(ctaWords).forEach(([action, words]) => {
+    if (words.some(w => content.slice(-300).includes(w))) {
+      detectedCTAs.push(action);
+      d5Score += 1.5;
+    }
+  });
+  // 检查是否有直接的行动指令句式
+  if (/快[去来]|赶紧|立刻|马上|现在就/.test(content.slice(-200))) { d5Score += 1; d5Details.push('有紧迫感驱动'); }
+  if (detectedCTAs.length >= 3) { d5Details.push(`多重行动指令（${detectedCTAs.join('+')}），转化链路完整`); }
+  else if (detectedCTAs.length >= 1) { d5Details.push(`已有${detectedCTAs.join('+')}引导`); }
+  else { d5Details.push('缺少明确行动指令，用户看完容易划走'); }
+  d5Score = Math.min(10, d5Score);
+  sixDim.push({ name: '行动指令', score: d5Score, details: d5Details.join('，'), desc: '是否引导点赞/收藏/评论/关注/转化' });
+
+  // —— 维度6：平台适配 ——
+  let d6Score = 5; let d6Details = []; // 默认5分
+  const ch = channel.toLowerCase();
+  if (ch.includes('小红书') || ch === '未填写') {
+    // 小红书适配检测
+    if (title.length <= 20) { d6Score += 1; d6Details.push('标题长度适配小红书'); }
+    if (hasNumbers || hasBullets) { d6Score += 1; d6Details.push('清单体/分点适配图文'); }
+    if (/[！!✨💡🔥❗⭐📌]/.test(title)) { d6Score += 0.5; d6Details.push('标题有符号/emoji'); }
+    if (bodyText.length > 200 && bodyText.length < 1200) { d6Score += 1; d6Details.push('正文篇幅适配小红书'); }
+    if (detectedCTAs.includes('收藏')) { d6Score += 0.5; d6Details.push('有收藏引导（小红书核心指标）'); }
+    if (d6Details.length === 0) d6Details.push('小红书平台基本适配');
+  }
+  if (ch.includes('抖音') || ch.includes('视频')) {
+    if (title.length <= 15) { d6Score += 1; d6Details.push('标题简短适配短视频'); }
+    if (bestHookScore >= 2) { d6Score += 1.5; d6Details.push('强钩子适配3秒法则'); }
+    if (bodyText.length < 500) { d6Score += 1; d6Details.push('内容精炼适配短视频节奏'); }
+    if (d6Details.length === 0) d6Details.push('抖音/视频号平台基本适配');
+  }
+  if (ch.includes('公众号') || ch.includes('微信')) {
+    if (bodyText.length > 500) { d6Score += 1; d6Details.push('长文适配公众号深度阅读'); }
+    if (['案例','分析','报告','深度','盘点'].some(w => content.includes(w))) { d6Score += 1; d6Details.push('有深度内容标签'); }
+    if (d6Details.length === 0) d6Details.push('公众号平台基本适配');
+  }
+  if (ch.includes('B站') || ch.includes('b站') || ch.includes('bilibili')) {
+    if (['up主','弹幕','一键三连','投币'].some(w => content.includes(w))) { d6Score += 1.5; d6Details.push('有B站社区用语'); }
+    if (bodyText.length > 300) { d6Score += 1; d6Details.push('内容深度适配B站'); }
+    if (d6Details.length === 0) d6Details.push('B站平台基本适配');
+  }
+  if (ch === '未填写') { d6Details.push('未指定渠道，按小红书图文标准评估'); }
+  d6Score = Math.min(10, d6Score);
+  sixDim.push({ name: '平台适配', score: d6Score, details: d6Details.join('，'), desc: '是否符合该平台调性（小红书/抖音/公众号/B站等）' });
+
+  // 计算六维总分
+  const totalSixScore = (sixDim.reduce((s, d) => s + d.score, 0) / 6).toFixed(1);
+
+  // 六维评分等级颜色
+  function dimColor(score) {
+    if (score >= 8) return '#00b894';
+    if (score >= 6) return '#6c5ce7';
+    if (score >= 4) return '#fdcb6e';
+    return '#e17055';
+  }
+
+  // 爆火原因分析
+  const reasons = [];
+  if (extractedKws.some(k => ['春招','秋招','补录','实习'].includes(k))) reasons.push('踩准求职时间节点，时效性强');
+  if (maxMatch >= 2) reasons.push(`${detectedHook}运用得当，开头吸引力强`);
+  if (hasNumbers || hasBullets) reasons.push('内容结构清晰，信息密度高，易于消费');
+  if (content.length > 300 && content.length < 1500) reasons.push('篇幅适中，深度和可读性平衡好');
+  if (extractedKws.some(k => ['大厂','字节','腾讯','阿里','华为'].includes(k))) reasons.push('大厂话题自带流量，用户关注度高');
+  if (reasons.length === 0) reasons.push('内容质量扎实，选题贴合目标用户核心需求');
+
+  // 可复用元素
+  const reusable = [];
+  reusable.push(`标题结构：${detectedHook} + 核心关键词 + 数据/情绪点`);
+  reusable.push(`正文框架：${bodyLogic}`);
+  reusable.push(`结尾模式：${detectedEnd}`);
+  if (extractedKws.length > 0) reusable.push(`高频关键词组合：${extractedKws.slice(0, 5).join('、')}`);
+
+  // ===== 优化点分析（新增维度） =====
+  const optimizations = [];
+
+  // 标题优化
+  if (title.length > 25) {
+    optimizations.push({ area: '标题', level: '建议', text: `标题${title.length}字偏长，小红书/抖音建议控制在20字内，核心信息前置` });
+  } else if (title.length < 8) {
+    optimizations.push({ area: '标题', level: '建议', text: '标题过短，缺少信息量，建议补充人群词/数字/情绪词提升点击率' });
+  }
+  if (maxMatch === 0) {
+    optimizations.push({ area: '标题', level: '重要', text: '标题缺少明显钩子（情绪/痛点/利益/悬念），开头吸引力不足，建议加入情绪词或痛点对比' });
+  }
+  if (!extractedKws.some(k => ['应届生','26届','27届','大学生','实习生','考研','双非','985'].some(a => k.includes(a)))) {
+    optimizations.push({ area: '标题', level: '建议', text: '标题缺少目标人群标签（如应届生/26届/双非），加入后可提升精准触达率' });
+  }
+  if (!/\d/.test(title)) {
+    optimizations.push({ area: '标题', level: '建议', text: '标题无数字元素，加入具体数字（如"5个方法""3天搞定"）可显著提升点击率' });
+  }
+
+  // 内容结构优化
+  if (!hasNumbers && !hasBullets && bodyText.length > 200) {
+    optimizations.push({ area: '正文', level: '重要', text: '正文缺少分点/清单结构，大段文字阅读体验差，建议改为分点列举或加小标题提升可读性' });
+  }
+  if (bodyText.length > 2000) {
+    optimizations.push({ area: '正文', level: '建议', text: `正文${bodyText.length}字过长，小红书图文建议800-1200字，长内容考虑拆成系列或精简` });
+  }
+  if (bodyText.length < 100 && bodyText.length > 0) {
+    optimizations.push({ area: '正文', level: '建议', text: '正文内容偏少，信息密度不足，建议补充具体案例/数据/对比来增强说服力' });
+  }
+
+  // 结尾优化
+  if (detectedEnd === '无明显引导') {
+    optimizations.push({ area: '结尾', level: '重要', text: '结尾缺少行动引导（收藏/评论/关注/转发），白白浪费互动转化机会，建议至少加一个引导动作' });
+  }
+  const endHasCTA = ['收藏','关注','评论','转发','私信','点赞'].filter(w => endText.includes(w));
+  if (endHasCTA.length === 1) {
+    optimizations.push({ area: '结尾', level: '建议', text: `当前仅有"${endHasCTA[0]}"单一引导，建议组合2个引导动作（如"收藏+评论"）提升互动率` });
+  }
+
+  // 关键词/SEO优化
+  if (extractedKws.length < 2) {
+    optimizations.push({ area: '关键词', level: '建议', text: '内容中可识别的求职关键词偏少，建议自然植入2-3个高搜索量关键词（如春招/面试/简历）提升搜索分发' });
+  }
+  if (!extractedKws.some(k => ['春招','秋招','暑期实习','补录','校招'].includes(k))) {
+    optimizations.push({ area: '关键词', level: '提示', text: '未包含时间节点关键词（春招/秋招/暑期实习），如内容有时效性可加入节点词蹭搜索流量' });
+  }
+
+  // 校招场景适配优化
+  if (!content.includes('牛客') && !content.includes('求职') && !content.includes('面试') && !content.includes('简历') && !content.includes('offer')) {
+    optimizations.push({ area: '场景', level: '提示', text: '内容与校招求职场景关联度不高，如需投放求职类账号，建议增加求职场景关联（面试/简历/offer等）' });
+  }
+
+  // 互动设计优化
+  const hasQuestion = /[？?]/.test(bodyText);
+  if (!hasQuestion) {
+    optimizations.push({ area: '互动', level: '建议', text: '正文缺少提问/互动设计，加入1-2个引导性问题（如"你们觉得呢？""有同款经历吗？"）可提升评论量' });
+  }
+
+  // 如果没有发现问题
+  if (optimizations.length === 0) {
+    optimizations.push({ area: '综合', level: '优秀', text: '内容各维度表现均衡，标题钩子、正文结构、结尾引导齐全，是一篇完成度较高的内容' });
+  }
+
+  // 优化点level对应样式
+  const levelStyle = { '重要': 'hot', '建议': 'blue', '提示': '', '优秀': 'green' };
+
+  // 渲染拆解结果
+  const resultDiv = document.getElementById('analyze-result');
+  resultDiv.innerHTML = `
+    <h3>拆解结果</h3>
+    <div class="analysis-block">
+      <h4>基础信息</h4>
+      <p>标题：${title}</p>
+      <p>发布渠道：${channel} ｜ 阅读量：${reads} ｜ 互动量：${interact} ｜ 内容评分：${score}</p>
+      <p>提取关键词：${extractedKws.length > 0 ? extractedKws.map(k => '<span class="tag">' + k + '</span>').join('') : '<span class="tag">无匹配关键词</span>'}</p>
+    </div>
+    <div class="analysis-block">
+      <h4>内容结构拆解</h4>
+      <ul>
+        <li><strong>开头钩子类型：</strong>${detectedHook}</li>
+        <li><strong>正文逻辑结构：</strong>${bodyLogic}</li>
+        <li><strong>结尾引导方式：</strong>${detectedEnd}</li>
+      </ul>
+    </div>
+    <div class="analysis-block" style="background:#f8f9ff;border-radius:8px;padding:14px 18px;">
+      <h4 style="color:#6c5ce7;border-left-color:#6c5ce7;">爆款六维评分（综合 ${totalSixScore} 分）</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+        ${sixDim.map(d => `
+          <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #e8e8f8;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <strong style="font-size:13px;">${d.name}</strong>
+              <span style="font-size:18px;font-weight:700;color:${dimColor(d.score)}">${d.score.toFixed(1)}</span>
+            </div>
+            <div style="background:#f0f0f0;border-radius:4px;height:6px;margin-bottom:6px;">
+              <div style="background:${dimColor(d.score)};height:6px;border-radius:4px;width:${d.score*10}%;transition:width .3s;"></div>
+            </div>
+            <div style="font-size:11px;color:#636e72;line-height:1.5;">${d.details}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="font-size:11px;color:#b2bec3;margin-top:8px;">六维公式：选题命中度 · 情绪钩子 · 结构顺滑度 · 信息密度 · 行动指令 · 平台适配</div>
+    </div>
+    <div class="analysis-block">
+      <h4>可直接复用的内容元素</h4>
+      <ul>${reusable.map(r => '<li>' + r + '</li>').join('')}</ul>
+    </div>
+    <div class="analysis-block">
+      <h4>爆火核心原因</h4>
+      <ul>${reasons.map(r => '<li>' + r + '</li>').join('')}</ul>
+    </div>
+    <div class="analysis-block" style="background:#fffbf0;border-radius:8px;padding:12px 16px;">
+      <h4 style="color:#e17055;border-left-color:#e17055;">优化建议（${optimizations.length}条）</h4>
+      <ul>${optimizations.map(o => '<li><span class="tag ' + (levelStyle[o.level]||'') + '">' + o.level + '·' + o.area + '</span> ' + o.text + '</li>').join('')}</ul>
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <button class="btn btn-success" onclick="saveAnalyzedToHitLib()">一键存入爆款库</button>
+    </div>
+  `;
+
+  // 暂存拆解数据，供入库使用
+  window._lastAnalysis = {
+    title, channel, reads, interact, score,
+    keywords: extractedKws,
+    hookType: detectedHook,
+    bodyLogic,
+    endGuide: detectedEnd,
+    structure: `${detectedHook}+${bodyLogic}+${detectedEnd}`,
+    reasons,
+    reusable,
+    content: content.slice(0, 500)
+  };
+}
+
+/** 将拆解结果存入爆款库 - 形成完整闭环 */
+function saveAnalyzedToHitLib() {
+  const data = window._lastAnalysis;
+  if (!data) { alert('请先完成拆解'); return; }
+
+  const hits = JSON.parse(localStorage.getItem('hitLib') || '[]');
+  const newId = hits.length > 0 ? Math.max(...hits.map(h => h.id)) + 1 : 1;
+
+  hits.push({
+    id: newId,
+    title: data.title,
+    score: parseFloat(data.score) || 8.0,
+    keywords: data.keywords.length > 0 ? data.keywords : [data.title.slice(0, 4)],
+    channel: data.channel,
+    reads: parseInt(data.reads) || 0,
+    interact: parseInt(data.interact) || 0,
+    structure: data.structure,
+    hookType: data.hookType,
+    bodyLogic: data.bodyLogic,
+    endGuide: data.endGuide,
+    addedAt: new Date().toISOString()
+  });
+
+  localStorage.setItem('hitLib', JSON.stringify(hits));
+  alert('已成功存入爆款库！新增爆款将自动参与后续选题生成。\n当前爆款库共 ' + hits.length + ' 条');
+}
+
+/** 手动添加爆款 */
+function saveNewHit() {
+  const title = document.getElementById('hit-title').value.trim();
+  if (!title) { alert('请填写标题'); return; }
+
+  const hits = JSON.parse(localStorage.getItem('hitLib') || '[]');
+  const newId = hits.length > 0 ? Math.max(...hits.map(h => h.id)) + 1 : 1;
+
+  hits.push({
+    id: newId,
+    title,
+    score: parseFloat(document.getElementById('hit-score').value) || 8.0,
+    keywords: (document.getElementById('hit-keywords').value || title.slice(0,4)).split(/[,，、]/).filter(Boolean),
+    channel: document.getElementById('hit-channel').value.trim() || '',
+    reads: parseInt(document.getElementById('hit-reads').value) || 0,
+    interact: parseInt(document.getElementById('hit-interact').value) || 0,
+    structure: document.getElementById('hit-structure').value.trim() || '',
+    hookType: '',
+    bodyLogic: '',
+    endGuide: '',
+    summary: document.getElementById('hit-summary').value.trim() || '',
+    addedAt: new Date().toISOString()
+  });
+
+  localStorage.setItem('hitLib', JSON.stringify(hits));
+  closeModal('modal-add-hit');
+
+  // 清空表单
+  ['hit-title','hit-summary','hit-channel','hit-reads','hit-interact','hit-score','hit-keywords','hit-structure'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  alert('爆款已入库！当前共 ' + hits.length + ' 条爆款');
+}
+
+/** 导入热点JSON文件（来自 fetch_hotpoints.py 输出） */
+function importHotspotJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      let hotpoints;
+      // 兼容 fetch_hotpoints.py 的输出格式（有 hotpoints 字段）和纯数组
+      if (data.hotpoints && Array.isArray(data.hotpoints)) {
+        hotpoints = data.hotpoints;
+      } else if (Array.isArray(data)) {
+        hotpoints = data;
+      } else {
+        alert('JSON格式不正确，需要包含 hotpoints 数组');
+        return;
+      }
+      // 添加 id（如果没有）
+      hotpoints.forEach((h, i) => { if (!h.id) h.id = i + 1; });
+      localStorage.setItem('hotspots', JSON.stringify(hotpoints));
+      loadHotspots();
+      alert('成功导入 ' + hotpoints.length + ' 条热点数据！' + (data.isMock ? '（模拟数据）' : '（真实数据）'));
+    } catch (err) {
+      alert('JSON解析失败：' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value = ''; // 重置，允许再次选择同一文件
+}
+
+/** 导出爆款库为JSON */
+function exportHitLib() {
+  const hits = JSON.parse(localStorage.getItem('hitLib') || '[]');
+  const blob = new Blob([JSON.stringify(hits, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '爆款库_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ==================== 初始化 ====================
+(function init() {
+  initKeywordLib();
+  initHitLib();
+  initContentTypes();
+  // 异步加载热点数据（从远程 JSON）
+  initHotspots();
+  renderTypeSelect();
+})();
+</script>
+</body>
+</html>
